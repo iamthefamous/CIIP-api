@@ -8,7 +8,7 @@ async def save_opportunity(
         INSERT INTO {schema}.saved_opportunities (user_id, opportunity_id)
         VALUES ($1, $2)
         ON CONFLICT (user_id, opportunity_id) DO UPDATE
-        SET saved_at = saved_opportunities.saved_at
+        SET saved_at = now()
         RETURNING user_id, opportunity_id, saved_at
     """
     return await conn.fetchrow(query, user_id, opportunity_id)
