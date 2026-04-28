@@ -84,5 +84,7 @@ async def verify_institution(
             is_verified=is_verified,
         )
     if not row:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Institution not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Institution not found"
+        )
     return dict(row)

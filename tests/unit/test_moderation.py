@@ -51,7 +51,9 @@ async def test_moderator_can_approve(client):
     )
     opportunity_id = opportunity_resp.json()["id"]
 
-    moderator_headers = auth_headers(uuid.uuid4(), "moderator@example.com", role="moderator")
+    moderator_headers = auth_headers(
+        uuid.uuid4(), "moderator@example.com", role="moderator"
+    )
     await client.post(
         "/v1/users/me",
         headers=moderator_headers,

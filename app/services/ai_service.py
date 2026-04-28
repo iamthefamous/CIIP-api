@@ -17,7 +17,9 @@ class AIService:
             else None
         )
 
-    async def generate_summary_and_tags(self, content: str) -> Tuple[Optional[str], Optional[list]]:
+    async def generate_summary_and_tags(
+        self, content: str
+    ) -> Tuple[Optional[str], Optional[list]]:
         if not self.client:
             return None, None
 

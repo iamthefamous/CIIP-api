@@ -68,7 +68,9 @@ async def create_opportunity(
             row["id"],
             status,
         )
-        opportunity = await get_opportunity(conn, schema=schema, opportunity_id=row["id"])
+        opportunity = await get_opportunity(
+            conn, schema=schema, opportunity_id=row["id"]
+        )
     return opportunity
 
 
@@ -127,7 +129,9 @@ async def list_opportunities(
     return total, rows
 
 
-async def get_opportunity(conn: asyncpg.Connection, *, schema: str, opportunity_id: str):
+async def get_opportunity(
+    conn: asyncpg.Connection, *, schema: str, opportunity_id: str
+):
     query = f"""
         SELECT o.id, o.title, o.description, o.opportunity_type, o.category_id,
                o.institution_id, o.submitted_by, o.status, o.deadline, o.location,
@@ -143,7 +147,11 @@ async def get_opportunity(conn: asyncpg.Connection, *, schema: str, opportunity_
 
 
 async def update_opportunity_status(
-    conn: asyncpg.Connection, *, schema: str, opportunity_id: str, status: OpportunityStatus
+    conn: asyncpg.Connection,
+    *,
+    schema: str,
+    opportunity_id: str,
+    status: OpportunityStatus,
 ):
     query = f"""
         UPDATE {schema}.opportunities

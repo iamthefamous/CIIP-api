@@ -1,11 +1,15 @@
 import os
+import sys
 import uuid
+from pathlib import Path
 
 import asyncpg
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 from jose import jwt
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from app.main import create_app
 from app.utils.config import get_settings
@@ -14,7 +18,9 @@ from app.utils.db import init_connection
 
 @pytest.fixture(scope="session", autouse=True)
 def configure_env() -> None:
-    os.environ.setdefault("POSTGRES_URL", "postgresql://postgres:postgres@localhost:5432/postgres")
+    os.environ.setdefault(
+        "POSTGRES_URL", "postgresql://postgres:postgres@localhost:5432/postgres"
+    )
     os.environ.setdefault("APP_SCHEMA", "ciip_test")
     os.environ.setdefault("SUPABASE_JWT_SECRET", "test-secret")
     os.environ.setdefault("SUPABASE_AUDIENCE", "authenticated")

@@ -77,7 +77,9 @@ async def get_opportunity(
             conn, schema=settings.app_schema, opportunity_id=opportunity_id
         )
     if not row:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Opportunity not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Opportunity not found"
+        )
     return dict(row)
 
 

@@ -6,7 +6,12 @@ from app.ciip_api.schemas.opportunities import OpportunityStatus
 
 
 async def list_queue(
-    conn: asyncpg.Connection, *, schema: str, status: OpportunityStatus, limit: int, offset: int
+    conn: asyncpg.Connection,
+    *,
+    schema: str,
+    status: OpportunityStatus,
+    limit: int,
+    offset: int,
 ):
     query = f"""
         SELECT id, opportunity_id, status, reviewed_by, note, created_at, reviewed_at

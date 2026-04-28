@@ -21,7 +21,9 @@ router = APIRouter(prefix="/categories", tags=["categories"])
 async def list_categories(request: Request, _user=Depends(get_current_user)):
     settings = get_settings()
     async with request.app.state.pool.acquire() as conn:
-        rows = await categories_controller.list_categories(conn, schema=settings.app_schema)
+        rows = await categories_controller.list_categories(
+            conn, schema=settings.app_schema
+        )
     return [dict(row) for row in rows]
 
 

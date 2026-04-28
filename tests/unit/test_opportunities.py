@@ -8,7 +8,9 @@ from tests.conftest import auth_headers
 @pytest.mark.asyncio
 async def test_create_and_filter_opportunities(client):
     institution_user_id = uuid.uuid4()
-    headers = auth_headers(institution_user_id, "institution@example.com", role="institution")
+    headers = auth_headers(
+        institution_user_id, "institution@example.com", role="institution"
+    )
     await client.post(
         "/v1/users/me",
         headers=headers,
@@ -53,7 +55,9 @@ async def test_create_and_filter_opportunities(client):
     opportunity_id = opportunity_resp.json()["id"]
     assert opportunity_resp.json()["status"] == "pending"
 
-    moderator_headers = auth_headers(uuid.uuid4(), "moderator@example.com", role="moderator")
+    moderator_headers = auth_headers(
+        uuid.uuid4(), "moderator@example.com", role="moderator"
+    )
     await client.post(
         "/v1/users/me",
         headers=moderator_headers,

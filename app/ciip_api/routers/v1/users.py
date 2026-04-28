@@ -21,9 +21,13 @@ router = APIRouter(prefix="/users", tags=["users"])
 async def get_me(request: Request, user=Depends(get_current_user)):
     settings = get_settings()
     async with request.app.state.pool.acquire() as conn:
-        row = await users_controller.get_user(conn, user_id=user.id, schema=settings.app_schema)
+        row = await users_controller.get_user(
+            conn, user_id=user.id, schema=settings.app_schema
+        )
     if not row:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
     return dict(row)
 
 

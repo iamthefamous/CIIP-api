@@ -30,7 +30,11 @@ async def list_queue(
     settings = get_settings()
     async with request.app.state.pool.acquire() as conn:
         total, rows = await moderation_controller.list_queue(
-            conn, schema=settings.app_schema, status=status_param, limit=limit, offset=offset
+            conn,
+            schema=settings.app_schema,
+            status=status_param,
+            limit=limit,
+            offset=offset,
         )
     return {"total": total, "items": [dict(row) for row in rows]}
 
@@ -61,7 +65,9 @@ async def approve(
                 note=payload.note,
             )
             if not queue_row:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Queue item not found")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Queue item not found"
+                )
             await opportunities_controller.update_opportunity_status(
                 conn,
                 schema=settings.app_schema,
@@ -97,7 +103,9 @@ async def reject(
                 note=payload.note,
             )
             if not queue_row:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Queue item not found")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Queue item not found"
+                )
             await opportunities_controller.update_opportunity_status(
                 conn,
                 schema=settings.app_schema,

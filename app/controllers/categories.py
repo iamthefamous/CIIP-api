@@ -1,7 +1,9 @@
 import asyncpg
 
 
-async def create_category(conn: asyncpg.Connection, *, name: str, slug: str, schema: str):
+async def create_category(
+    conn: asyncpg.Connection, *, name: str, slug: str, schema: str
+):
     query = f"""
         INSERT INTO {schema}.categories (name, slug)
         VALUES ($1, $2)

@@ -1,7 +1,7 @@
 """initial schema
 
 Revision ID: 001_initial_schema
-Revises: 
+Revises:
 Create Date: 2026-04-28 00:00:00.000000
 """
 
@@ -72,31 +72,53 @@ def upgrade() -> None:
         sa.Column("full_name", sa.Text(), nullable=True),
         sa.Column("role", user_role, nullable=False, server_default="user"),
         sa.Column("audience_type", audience_type, nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
-        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
         schema=schema,
     )
 
     op.create_table(
         "institutions",
-        sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column(
+            "id",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("gen_random_uuid()"),
+        ),
         sa.Column("name", sa.Text(), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("website", sa.Text(), nullable=True),
-        sa.Column("is_verified", sa.Boolean(), nullable=False, server_default=sa.text("false")),
+        sa.Column(
+            "is_verified", sa.Boolean(), nullable=False, server_default=sa.text("false")
+        ),
         sa.Column("owner_user_id", sa.Uuid(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
-        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
         sa.ForeignKeyConstraint(["owner_user_id"], [f"{schema}.users.id"]),
         schema=schema,
     )
 
     op.create_table(
         "categories",
-        sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column(
+            "id",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("gen_random_uuid()"),
+        ),
         sa.Column("name", sa.Text(), nullable=False),
         sa.Column("slug", sa.Text(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
         sa.UniqueConstraint("name"),
         sa.UniqueConstraint("slug"),
         schema=schema,
@@ -104,7 +126,12 @@ def upgrade() -> None:
 
     op.create_table(
         "opportunities",
-        sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column(
+            "id",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("gen_random_uuid()"),
+        ),
         sa.Column("title", sa.Text(), nullable=False),
         sa.Column("description", sa.Text(), nullable=False),
         sa.Column("opportunity_type", opportunity_type, nullable=False),
@@ -122,8 +149,12 @@ def upgrade() -> None:
         sa.Column("url", sa.Text(), nullable=True),
         sa.Column("ai_tags", sa.JSON(), nullable=True),
         sa.Column("ai_summary", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
-        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
         sa.ForeignKeyConstraint(["category_id"], [f"{schema}.categories.id"]),
         sa.ForeignKeyConstraint(["institution_id"], [f"{schema}.institutions.id"]),
         sa.ForeignKeyConstraint(["submitted_by"], [f"{schema}.users.id"]),
@@ -141,7 +172,12 @@ def upgrade() -> None:
 
     op.create_table(
         "moderation_queue",
-        sa.Column("id", sa.Uuid(), primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column(
+            "id",
+            sa.Uuid(),
+            primary_key=True,
+            server_default=sa.text("gen_random_uuid()"),
+        ),
         sa.Column("opportunity_id", sa.Uuid(), nullable=False),
         sa.Column("reviewed_by", sa.Uuid(), nullable=True),
         sa.Column(
@@ -151,7 +187,9 @@ def upgrade() -> None:
             server_default="pending",
         ),
         sa.Column("note", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
         sa.Column("reviewed_at", sa.DateTime(timezone=True), nullable=True),
         sa.ForeignKeyConstraint(["opportunity_id"], [f"{schema}.opportunities.id"]),
         sa.ForeignKeyConstraint(["reviewed_by"], [f"{schema}.users.id"]),
@@ -163,7 +201,9 @@ def upgrade() -> None:
         "saved_opportunities",
         sa.Column("user_id", sa.Uuid(), nullable=False),
         sa.Column("opportunity_id", sa.Uuid(), nullable=False),
-        sa.Column("saved_at", sa.DateTime(timezone=True), server_default=sa.text("now()")),
+        sa.Column(
+            "saved_at", sa.DateTime(timezone=True), server_default=sa.text("now()")
+        ),
         sa.ForeignKeyConstraint(["user_id"], [f"{schema}.users.id"]),
         sa.ForeignKeyConstraint(["opportunity_id"], [f"{schema}.opportunities.id"]),
         sa.PrimaryKeyConstraint("user_id", "opportunity_id"),

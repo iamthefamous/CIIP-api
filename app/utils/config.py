@@ -13,12 +13,16 @@ class Settings(BaseSettings):
     postgres_url: str = Field(alias="POSTGRES_URL")
     redis_url: Optional[str] = Field(default=None, alias="REDIS_URL")
 
-    supabase_jwt_secret: Optional[str] = Field(default=None, alias="SUPABASE_JWT_SECRET")
+    supabase_jwt_secret: Optional[str] = Field(
+        default=None, alias="SUPABASE_JWT_SECRET"
+    )
     supabase_jwks_url: Optional[str] = Field(default=None, alias="SUPABASE_JWKS_URL")
     supabase_audience: Optional[str] = Field(default=None, alias="SUPABASE_AUDIENCE")
 
     anthropic_api_key: Optional[str] = Field(default=None, alias="ANTHROPIC_API_KEY")
-    anthropic_model: str = Field(default="claude-3-5-sonnet-latest", alias="ANTHROPIC_MODEL")
+    anthropic_model: str = Field(
+        default="claude-3-5-sonnet-latest", alias="ANTHROPIC_MODEL"
+    )
 
 
 @lru_cache

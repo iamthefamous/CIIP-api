@@ -31,7 +31,9 @@ def _get_role_from_claims(claims: Dict[str, Any]) -> str:
     return "user"
 
 
-async def _decode_with_jwks(token: str, jwks_url: str, audience: Optional[str]) -> Dict[str, Any]:
+async def _decode_with_jwks(
+    token: str, jwks_url: str, audience: Optional[str]
+) -> Dict[str, Any]:
     unverified_header = jwt.get_unverified_header(token)
     jwks = await _fetch_jwks(jwks_url)
     for key in jwks.get("keys", []):
@@ -49,10 +51,14 @@ async def _decode_with_jwks(token: str, jwks_url: str, audience: Optional[str]) 
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
                 ) from exc
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+    )
 
 
-def _decode_with_secret(token: str, secret: str, audience: Optional[str]) -> Dict[str, Any]:
+def _decode_with_secret(
+    token: str, secret: str, audience: Optional[str]
+) -> Dict[str, Any]:
     try:
         return jwt.decode(
             token,
@@ -62,7 +68,9 @@ def _decode_with_secret(token: str, secret: str, audience: Optional[str]) -> Dic
             options={"verify_aud": audience is not None},
         )
     except JWTError as exc:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+        ) from exc
 
 
 async def get_current_user(
@@ -72,16 +80,25 @@ async def get_current_user(
     token = credentials.credentials
     claims: Dict[str, Any]
     if settings.supabase_jwks_url:
-        claims = await _decode_with_jwks(token, settings.supabase_jwks_url, settings.supabase_audience)
+        claims = await _decode_with_jwks(
+            token, settings.supabase_jwks_url, settings.supabase_audience
+        )
     elif settings.supabase_jwt_secret:
-        claims = _decode_with_secret(token, settings.supabase_jwt_secret, settings.supabase_audience)
+        claims = _decode_with_secret(
+            token, settings.supabase_jwt_secret, settings.supabase_audience
+        )
     else:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Auth not configured")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Auth not configured",
+        )
 
     user_id = claims.get("sub")
     email = claims.get("email")
     if not user_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+        )
     role = _get_role_from_claims(claims)
     return UserContext(id=user_id, email=email, role=role)
 
@@ -89,7 +106,9 @@ async def get_current_user(
 def require_roles(allowed: Iterable[str]):
     def dependency(user: UserContext = Depends(get_current_user)) -> UserContext:
         if user.role not in allowed:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden"
+            )
         return user
 
     return dependency

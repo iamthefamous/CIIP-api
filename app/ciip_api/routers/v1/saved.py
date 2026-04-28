@@ -27,7 +27,11 @@ async def list_saved(
     settings = get_settings()
     async with request.app.state.pool.acquire() as conn:
         total, rows = await saved_controller.list_saved(
-            conn, schema=settings.app_schema, user_id=user.id, limit=limit, offset=offset
+            conn,
+            schema=settings.app_schema,
+            user_id=user.id,
+            limit=limit,
+            offset=offset,
         )
     return {"total": total, "items": [dict(row) for row in rows]}
 
@@ -50,7 +54,10 @@ async def save_opportunity(
     settings = get_settings()
     async with request.app.state.pool.acquire() as conn:
         row = await saved_controller.save_opportunity(
-            conn, schema=settings.app_schema, user_id=user.id, opportunity_id=str(payload.opportunity_id)
+            conn,
+            schema=settings.app_schema,
+            user_id=user.id,
+            opportunity_id=str(payload.opportunity_id),
         )
     return dict(row)
 
@@ -72,6 +79,9 @@ async def unsave_opportunity(
     settings = get_settings()
     async with request.app.state.pool.acquire() as conn:
         await saved_controller.unsave_opportunity(
-            conn, schema=settings.app_schema, user_id=user.id, opportunity_id=opportunity_id
+            conn,
+            schema=settings.app_schema,
+            user_id=user.id,
+            opportunity_id=opportunity_id,
         )
     return None
