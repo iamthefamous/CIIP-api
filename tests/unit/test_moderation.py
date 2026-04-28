@@ -19,9 +19,16 @@ async def test_moderator_can_approve(client):
         json={"full_name": "Inst User", "audience_type": "general_public"},
     )
 
+    admin_headers = auth_headers(uuid.uuid4(), "admin@example.com", role="admin")
+    await client.post(
+        "/v1/users/me",
+        headers=admin_headers,
+        json={"full_name": "Admin", "audience_type": "general_public"},
+    )
+
     category_resp = await client.post(
         "/v1/categories",
-        headers=institution_headers,
+        headers=admin_headers,
         json={"name": "Events", "slug": "events"},
     )
     category_id = category_resp.json()["id"]

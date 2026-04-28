@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, status
 
 from app.ciip_api.schemas.categories import CategoryCreate, CategoryOut
 from app.controllers import categories as categories_controller
-from app.utils.auth import get_current_user
+from app.utils.auth import get_current_user, require_roles
 from app.utils.config import get_settings
 
 
@@ -40,7 +40,7 @@ async def list_categories(request: Request, _user=Depends(get_current_user)):
 async def create_category(
     request: Request,
     payload: CategoryCreate,
-    _user=Depends(get_current_user),
+    _user=Depends(require_roles({"admin"})),
 ):
     settings = get_settings()
     async with request.app.state.pool.acquire() as conn:

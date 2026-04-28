@@ -3,11 +3,12 @@ from typing import Optional
 import asyncpg
 from fastapi import FastAPI
 
-from app.utils.config import Settings
+from app.utils.config import Settings, validate_schema
 
 
 async def init_connection(conn: asyncpg.Connection, schema: str) -> None:
-    await conn.execute(f"SET search_path TO {schema}")
+    safe_schema = validate_schema(schema)
+    await conn.execute(f"SET search_path TO {safe_schema}")
 
 
 async def init_pool(app: FastAPI, settings: Settings) -> None:

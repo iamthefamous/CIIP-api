@@ -17,9 +17,16 @@ async def test_create_and_filter_opportunities(client):
         json={"full_name": "Inst User", "audience_type": "general_public"},
     )
 
+    admin_headers = auth_headers(uuid.uuid4(), "admin@example.com", role="admin")
+    await client.post(
+        "/v1/users/me",
+        headers=admin_headers,
+        json={"full_name": "Admin", "audience_type": "general_public"},
+    )
+
     category_resp = await client.post(
         "/v1/categories",
-        headers=headers,
+        headers=admin_headers,
         json={"name": "Internships", "slug": "internships"},
     )
     assert category_resp.status_code == 201

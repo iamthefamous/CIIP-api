@@ -1,4 +1,5 @@
 from functools import lru_cache
+import re
 from typing import Optional
 
 from pydantic import Field
@@ -23,6 +24,15 @@ class Settings(BaseSettings):
     anthropic_model: str = Field(
         default="claude-3-5-sonnet-latest", alias="ANTHROPIC_MODEL"
     )
+
+
+_SCHEMA_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def validate_schema(schema: str) -> str:
+    if not _SCHEMA_RE.fullmatch(schema):
+        raise ValueError("Invalid schema name")
+    return schema
 
 
 @lru_cache
