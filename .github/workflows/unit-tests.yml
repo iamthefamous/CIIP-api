@@ -1,0 +1,57 @@
+name: Unit Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      APP_SCHEMA: ciip_test
+      # options=-csearch_path=<schema> (= is URL-encoded as %3D) tells Postgres to
+      # set search_path for every session so Alembic creates alembic_version and
+      # all DDL inside the APP_SCHEMA schema.
+      POSTGRES_URL: postgresql://postgres:postgres@localhost:5432/postgres?options=-csearch_path%3Dciip_test
+      SUPABASE_JWT_SECRET: test-secret
+      SUPABASE_AUDIENCE: authenticated
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Create test schema
+        # Create the schema so Alembic has a target schema to write into.
+        run: psql "postgresql://postgres:postgres@localhost:5432/postgres" -c "CREATE SCHEMA IF NOT EXISTS \"$APP_SCHEMA\";"
+      - name: Run migrations
+        run: alembic upgrade head
+      - name: Run tests
+        run: pytest -q
